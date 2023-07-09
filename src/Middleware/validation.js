@@ -1,7 +1,8 @@
 
 import joi from 'joi'
+import { Types } from 'mongoose';
 
-const dataMethods = ['body','query','params','headers','file'];
+// const dataMethods = ['body','query','params','headers','file'];
 
 const validationObjectId =(value,helper)=>{
 
@@ -9,7 +10,7 @@ const validationObjectId =(value,helper)=>{
         return true 
     }else {
 
-        return helper.message("rteertertertertreterte")
+        return helper.message("id is invalid")
 
     }
 }
@@ -29,13 +30,13 @@ export const generalFields = {
         size:joi.number().positive().required(),
         dest:joi.string(),
     }),
-    id:joi.string().custom(validationObjectId).min(24).max(24).required(),
+    id:joi.string().custom(validationObjectId).required(),
 }
 
 const validation = (schema)=>{
     return (req,res,next)=>{
-        
-        const inputsData = {...req.body, ...req.params, ...req.query, file:req.file};
+        console.log(req.params)
+        const inputsData = req.file?{...req.body, ...req.params, ...req.query, file:req.file}:{...req.body, ...req.params, ...req.query};
         const validationResult = schema.validate(inputsData,{abortEarly:false})
         // return res.json({validationResult})
         if(validationResult.error?.details){
