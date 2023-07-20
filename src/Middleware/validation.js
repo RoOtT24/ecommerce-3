@@ -35,10 +35,8 @@ export const generalFields = {
 
 const validation = (schema)=>{
     return (req,res,next)=>{
-        console.log(req.params)
         const inputsData = req.file?{...req.body, ...req.params, ...req.query, file:req.file}:{...req.body, ...req.params, ...req.query};
         const validationResult = schema.validate(inputsData,{abortEarly:false})
-        // return res.json({validationResult})
         if(validationResult.error?.details){
             return res.json({message:"validation error",error:validationResult.error.details});
         }

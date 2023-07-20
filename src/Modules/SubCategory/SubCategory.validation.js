@@ -23,10 +23,16 @@ export const updateSubCategory = joi.object({
 
 export const getSpecificSubCategory = joi.object({
     subCatId:generalFields.id.required(),
+    catId:generalFields.id.required(),
 }).required();
 
-export const getSubCategory = joi.object({
+export const getSubCategoriesInCategory = joi.object({
     catId:generalFields.id.required()
     
 }).required();
+
+
+export const getSubCategory = joi.object({
+}).required();
+
 

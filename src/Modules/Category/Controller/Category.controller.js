@@ -56,7 +56,7 @@ export const getSpecificCategory = async (req, res, next) => {
   return res.status(200).json({message:"success", category});
 }
 export const getCategory = async (req, res, next) => {
-  const categories = await categoryModel.find();
+  const categories = await categoryModel.find().populate('subCategory');
   
   return res.status(200).json({message:"success", categories});
 }

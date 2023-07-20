@@ -7,8 +7,10 @@ import validation from "../../Middleware/validation.js";
 const router = Router({mergeParams: true});
 
 router.post('/',fileUpload(fileValidation.image).single('image'),validation(validators.createSubCategory), asyncHandler( subCategoryController.createSubCategory) );
-router.put('/:catId', fileUpload(fileValidation.image).single('image'),validation(validators.updateSubCategory), asyncHandler( subCategoryController.updateSubCategory));
-router.get('/:catId', validation(validators.getSpecificSubCategory), asyncHandler( subCategoryController.getSpecificSubCategory));
-router.get('/', validation(validators.getSubCategory), asyncHandler( subCategoryController.getSubCategory));
+router.put('/:subCatId', fileUpload(fileValidation.image).single('image'),validation(validators.updateSubCategory), asyncHandler( subCategoryController.updateSubCategory));
+router.get('/specific/:subCatId', validation(validators.getSpecificSubCategory), asyncHandler( subCategoryController.getSpecificSubCategory));
+router.get('/all', validation(validators.getSubCategory), asyncHandler( subCategoryController.getSubCategory));
+router.get('/', validation(validators.getSubCategoriesInCategory), asyncHandler( subCategoryController.getSubCategoriesInCat));
+
 
 export default router;

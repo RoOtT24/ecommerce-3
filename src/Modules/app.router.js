@@ -4,6 +4,9 @@ import { globalErrorHandel } from '../Services/errorHandling.js';
 import AuthRouter from './Auth/Auth.router.js';
 import UserRouter from './User/User.router.js';
 import CategoryRouter from './Category/Category.router.js';
+import SubCategoryRouter from './SubCategory/SubCategory.router.js';
+import CouponRouter from './Coupon/Coupon.router.js';
+import BrandRouter from './Brand/Brand.router.js';
 import path from 'path'; 
 import {fileURLToPath} from 'url';
  const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -16,6 +19,9 @@ const initApp=(app,express)=>{
     app.use("/auth", AuthRouter);
     app.use('/user', UserRouter);
     app.use('/category', CategoryRouter);
+    app.use('/subCategory', SubCategoryRouter);
+    app.use('/coupon',CouponRouter);
+    app.use('/brand',BrandRouter);
     app.use('/*', (req,res)=>{
         return res.json({message:"page not found"});
     })
