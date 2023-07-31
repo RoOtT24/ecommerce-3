@@ -1,13 +1,20 @@
 import jwt from 'jsonwebtoken';
 
-export const generateToken =(payload,signature=process.env.TOKEN_SIGNATURE,expiresIn='1h')=>{
+export const generateToken =(payload,signature, expiresIn='1d')=>{
 
-    const token = jwt.sign(payload,signature,{expiresIn});
+    if(expiresIn){
+        const token = jwt.sign(payload,signature,{expiresIn});
+        return token;
+        
+    }
+    else{
+        const token = jwt.sign(payload,signature);
+        return token;
+    }
 
-    return token;
 }
 
-export const verifyToken = (token,signature=process.env.TOKEN_SIGNATURE)=>{
+export const verifyToken = (token,signature)=>{
 
     const decoded = jwt.verify(token,signature);
 

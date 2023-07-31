@@ -3,11 +3,14 @@ import mongoose, {Schema,model} from 'mongoose';
 const userSchema = new Schema ({
     userName:{
         type:String,
-        required:true,
+        required:[true, 'userName is required'],
+        min:[2],
+        max:[20]
     },
     email:{
         type:String,
         required:true,
+        unique:true
     },
     password:{
         type:String,
@@ -17,12 +20,35 @@ const userSchema = new Schema ({
         type:Boolean,
         default:false,
     },
-    profilePic:{
+    image:{
+        type:Object,
+    },
+    phone:{
         type:String,
+    },
+    role:{
+        type:String,
+        enum:['User', 'Admin'],
+        default:'User',
+    },
+    status:{
+        type:String,
+        default:'Active',
+        enum:['Active', 'Not Active'],
+    },
+    gender:{
+        type:String,
+        enum:['Male', 'Female'],
+
     },
     profolePublicUrl:String,
     coverPic:[String],
+    forgetCode:{
+        type:String,
+        default:null,
+    }
 },
+
 {
     timestamps:true
 })

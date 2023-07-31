@@ -6,10 +6,10 @@ import { asyncHandler } from "../../Services/errorHandling.js";
 import validation from "../../Middleware/validation.js";
 const router = Router({mergeParams:true});
 
-router.post('/', fileUpload(fileValidation.image).single('image'),validation(validators.createBrand), asyncHandler( brandController.createBrand) );
-router.put('/:brandId', fileUpload(fileValidation.image).single('image'),validation(validators.updateBrand), asyncHandler( brandController.updateBrand));
-router.get('/specific/:brandId', validation(validators.getSpecificBrand), asyncHandler( brandController.getSpecificBrand));
-router.get('/', validation(validators.getBrandsInCat), asyncHandler( brandController.getBrandsInCat));
-router.get('/all', validation(validators.getAllBrands), asyncHandler( brandController.getAllBrands));
+router.post('/', auth(endPoint.create), fileUpload(fileValidation.image).single('image'),validation(validators.createBrand), asyncHandler( brandController.createBrand) );
+router.put('/:brandId', auth(endPoint.update), fileUpload(fileValidation.image).single('image'),validation(validators.updateBrand), asyncHandler( brandController.updateBrand));
+router.get('/specific/:brandId', auth(endPoint.get), validation(validators.getSpecificBrand), asyncHandler( brandController.getSpecificBrand));
+router.get('/', auth(endPoint.get), validation(validators.getBrandsInCat), asyncHandler( brandController.getBrandsInCat));
+router.get('/all', auth(endPoint.get), validation(validators.getAllBrands), asyncHandler( brandController.getAllBrands));
 
 export default router;

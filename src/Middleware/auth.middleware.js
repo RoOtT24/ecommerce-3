@@ -1,31 +1,35 @@
 import userModel from "../../DB/model/User.model.js";
 import { verifyToken } from "../Services/generateAndVerifyToken.js";
 
-export const auth = async (req,res,next)=>{
+export const roles = {
+    Admin:'Admin',
+    User:'User',
+    HR:'HR'
+}
 
-    try{
+export const auth =(accessRoles=[])=>{
+     async (req,res,next)=>{
+
         const {authorization} = req.headers;
 
         if(!authorization?.startsWith(process.env.BEARERKEY)){
-            return res.json({message:"invalid bearer key"});
+            return next(new Error("invalid bearer key", {cause:400}));
         }
         const token = authorization.split(process.env.BEARERKEY)[1];
         if(!token){
-            return res.json({message:"invalid token"})
+            return next(new Error("invalid token", {cause:400}));
         }
-        const decoded = verifyToken(token);
-        const authUser = await userModel.findById(decoded.id).select("userName email");
-        if(!authUser){
-            return res.status(401).json({message:"not register account"});
+        const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
+        const user = await userModel.findById(decoded.id).select("userName role");
+        if(!user){
+            return next(new Error("not register account", {cause:400}));
         }
-        req.id=decoded.id
-        next();
-    
-    }catch(error){
-        return res.json({message:"catch error",error:error.stack})
-    }
-   
+        if(!accessRoles.includes(user.role)){
+            return next(new Error("not authorized", {cause:403}));
+        }
+        req.user=user
+        return next();  
 }
-
+}
 
 

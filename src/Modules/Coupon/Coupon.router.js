@@ -6,9 +6,9 @@ import validation from "../../Middleware/validation.js";
 const router = Router();
 
 
-router.post('/', validation(validators.createCoupon), CouponController.createCoupon);
+router.post('/', auth([roles.Admin]), validation(validators.createCoupon), CouponController.createCoupon);
 router.get('/', validation(validators.getCoupon), CouponController.getCoupons);
 router.get('/:couponId', validation(validators.getSpecificCoupon), CouponController.getSpecificCoupon);
-router.put('/:couponId', validation(validators.updateCoupon), CouponController.updateCoupon);
+router.put('/:couponId', auth([roles.Admin]), validation(validators.updateCoupon), CouponController.updateCoupon);
 
 export default router;

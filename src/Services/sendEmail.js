@@ -5,6 +5,7 @@ export async function sendEmail(to,subject,html) {
 
   let transporter = nodemailer.createTransport({
     service:'gmail',
+    secure: true,
     auth: {
       user: process.env.EMAIL, // generated ethereal user
       pass: process.env.EMAIL_PASSWORD, // generated ethereal password
@@ -13,7 +14,7 @@ export async function sendEmail(to,subject,html) {
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: `Knowledge Academy " <${process.env.EMAIL}>`, // sender address
+    from: `Ecommerce-3 " <${process.env.EMAIL}>`, // sender address
     to, // list of receivers
     subject, // Subject line
     html, // html body
