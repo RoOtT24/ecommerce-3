@@ -4,7 +4,7 @@ import { Types } from 'mongoose';
 
 // const dataMethods = ['body','query','params','headers','file'];
 
-const validationObjectId =(value,helper)=>{
+export const validationObjectId =(value,helper)=>{
 
     if(Types.ObjectId.isValid(value)){
         return true 
@@ -35,7 +35,11 @@ export const generalFields = {
 
 const validation = (schema)=>{
     return (req,res,next)=>{
-        const inputsData = req.file?{...req.body, ...req.params, ...req.query, file:req.file}:{...req.body, ...req.params, ...req.query};
+        const inputsData = req.file?{...req.body, ...req.params, ...req.query, file:req.file}:req.files?{...req.body, ...req.params, ...req.query, files:{...req.files}}:{...req.body, ...req.params, ...req.query};
+        console.log(inputsData.files)
+        for(const i in inputsData.files){
+            console.log(i[0]);
+        }
         const validationResult = schema.validate(inputsData,{abortEarly:false})
         if(validationResult.error?.details){
             return res.json({message:"validation error",error:validationResult.error.details});

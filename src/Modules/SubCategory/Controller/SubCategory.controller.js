@@ -19,7 +19,9 @@ export const createSubCategory = async (req, res, next) => {
     name,
     slug,
     image: { public_id, secure_url },
-    categoryId:catId
+    categoryId:catId,
+    createdBy:req.user._id,
+    updatedBy:req.user._id
   });
   return res.status(201).json({ message: "success", subCategory });
 };
@@ -50,6 +52,7 @@ export const updateSubCategory = async (req, res, next) => {
     await cloudinary.uploader.destroy(subCat.image.public_id);
     subCat.image = { secure_url, public_id };
   }
+  subCat.updatedBy = req.user._id;
   await subCat.save();
   return res.status(200).json({ message: "success", subCat });
 }
@@ -81,4 +84,15 @@ export const getSubCategory = async (req, res, next) => {
   });
   
   return res.status(200).json({message:"success", subCategories});
+}
+
+
+export const getProducts = async (req, res, next) => {
+  const {subCatId, catId} = req.params;
+  const {products} = await subCategoryModel.findOne({_id:subCatId, categoryId:catId}).populate(
+    {
+      path:'products',
+      match:{isDeleted:{$eq:false}}
+    });
+  return res.status(200).json({message:'success', products})
 }

@@ -13,6 +13,9 @@ const brandSchema = new Schema ({
     createdBy:{
         type:Types.ObjectId, ref:'User', // will be required: true after prototype
     },
+    updatedBy:{
+        type:Types.ObjectId, ref:'User', // will be required: true after prototype
+    },
     categoryId:{type:Types.ObjectId, ref:'Category', required:true},
 },
 {

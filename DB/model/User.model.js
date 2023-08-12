@@ -46,6 +46,10 @@ const userSchema = new Schema ({
     forgetCode:{
         type:String,
         default:null,
+    },
+    changePasswordTime:{
+        type:Date,
+        
     }
 },
 

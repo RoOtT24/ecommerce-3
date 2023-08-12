@@ -14,6 +14,9 @@ const couponSchema = new Schema ({
     usedBy:[{type:Types.ObjectId, ref:'User'}],
     createdBy:{
         type:Types.ObjectId, ref:'User', // will be required: true after prototype
+    },
+    updatedBy:{
+        type:Types.ObjectId, ref:'User', // will be required: true after prototype
     }
 },
 {

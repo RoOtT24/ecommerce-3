@@ -15,6 +15,8 @@ export const createCategory = async (req, res, next) => {
     name,
     slug,
     image: { public_id, secure_url },
+    createdBy:req.user._id,
+    updatedBy:req.user._id
   });
   return res.status(201).json({ message: "success", category });
 };
@@ -44,6 +46,7 @@ export const updateCategory = async (req, res, next) => {
     await cloudinary.uploader.destroy(category.image.public_id);
     category.image = { secure_url, public_id };
   }
+  category.updatedBy = req.user._id;
   await category.save();
   return res.status(200).json({ message: "success", category });
 }

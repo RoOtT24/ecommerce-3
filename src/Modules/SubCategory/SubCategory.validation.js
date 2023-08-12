@@ -36,3 +36,7 @@ export const getSubCategory = joi.object({
 }).required();
 
 
+export const getProducts = joi.object({
+    subCatId:generalFields.id.required(),
+    catId:generalFields.id.required()
+}).required();

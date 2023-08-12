@@ -1,9 +1,10 @@
- import couponModel from "../../../../DB/model/Coupon.model.js";
+ import { request } from "express";
+import couponModel from "../../../../DB/model/Coupon.model.js";
 import cloudinary from "../../../Services/cloudinary.js";
 import slugify from "slugify";
 
 export const createCoupon = async (req, res, next) => {
-  const { name } = req.body;
+  const name = req.body.name.toLowerCase();
   
   if (await couponModel.findOne({ name }))
     return next(new Error(`Duplicate coupon name`, { cause: 409 }));
@@ -38,7 +39,9 @@ export const createCoupon = async (req, res, next) => {
   // else{
   const coupon = await couponModel.create({
     name,
-    amount
+    amount,
+    createdBy:req.user._id,
+    updatedBy:req.user._id
   });
   return res.status(200).json({ message: "success", coupon });
 // }
@@ -53,7 +56,7 @@ export const updateCoupon = async (req, res, next) => {
     );
 
   if (req.body.name) {
-    if (coupon.name === req.body.name)
+    if (coupon.name === req.body.name.toLowerCase())
       return next(new Error(`old name matches the new name`, { cause: 409 }));
     if (await couponModel.findOne({ name: req.body.name }))
       return next(new Error(`Duplicate coupon name`, { cause: 409 }));
@@ -66,6 +69,7 @@ export const updateCoupon = async (req, res, next) => {
     }
     coupon.amount = req.body.amount;
   }
+  coupon.updatedBy = req.user._id;
   await coupon.save();
   return res.status(200).json({ message: "success", coupon });
 }

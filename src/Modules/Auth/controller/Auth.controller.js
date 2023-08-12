@@ -622,7 +622,7 @@ export const login = async(req,res,next)=>{
           }else {
             const token =generateToken({id:user._id, role:user.role}, process.env.LOGIN_TOKEN, '1h');
             const refreshToken =generateToken({id:user._id, role:user.role}, process.env.LOGIN_TOKEN);
-                return res.status(200).json({message:"Done",token, refreshToken});
+                return res.status(200).json({message:"success",token, refreshToken});
             }
         
     }
@@ -638,7 +638,7 @@ export const sendCode = async (req, res, next)=>{
     return next(new Error('no user found',{cause:404}));
   }
   await sendEmail(email, 'password reset code', html);
-  return response.status(200).json({message:'success'});
+  return res.status(200).json({message:'success'});
 }
 
 
@@ -653,6 +653,7 @@ export const forgetPassword = async (req, res, next) => {
   }
   password = hash(password)
   user.password = password;
+  user.changePasswordTime = Date.now();
   user.save();
   return res.status(200).json({message:'success', user});
 }

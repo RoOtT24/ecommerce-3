@@ -16,7 +16,10 @@ const categorySchema = new Schema ({
     },
     createdBy:{
         type:Types.ObjectId, ref:'User', // will be required: true after prototype
-    }
+    },
+    updatedBy:{
+        type:Types.ObjectId, ref:'User', // will be required: true after prototype
+    },
 },
 {
     toJSON:{virtuals:true},

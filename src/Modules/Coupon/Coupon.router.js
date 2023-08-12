@@ -3,12 +3,14 @@ import * as CouponController from './Controller/Coupon.controller.js';
 import * as validators from './Coupon.validation.js';
 import { asyncHandler } from "../../Services/errorHandling.js";
 import validation from "../../Middleware/validation.js";
-const router = Router();
+import { auth } from "../../Middleware/auth.middleware.js";
+import { endPoint } from "../Category/Category.EndPoint.js";
+const router = Router({caseSensitive:true});
 
 
-router.post('/', auth([roles.Admin]), validation(validators.createCoupon), CouponController.createCoupon);
+router.post('/', auth(endPoint.Admin), validation(validators.createCoupon), CouponController.createCoupon);
 router.get('/', validation(validators.getCoupon), CouponController.getCoupons);
 router.get('/:couponId', validation(validators.getSpecificCoupon), CouponController.getSpecificCoupon);
-router.put('/:couponId', auth([roles.Admin]), validation(validators.updateCoupon), CouponController.updateCoupon);
+router.put('/:couponId', auth(endPoint.Admin), validation(validators.updateCoupon), CouponController.updateCoupon);
 
 export default router;

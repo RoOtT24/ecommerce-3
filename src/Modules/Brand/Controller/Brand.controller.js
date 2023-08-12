@@ -3,7 +3,7 @@ import cloudinary from "../../../Services/cloudinary.js";
 
 export const createBrand = async (req, res, next) => {
   const { name } = req.body;
-  const {catId} = req.params;
+  const { catId } = req.params;
   if (await brandModel.findOne({ name }))
     return next(new Error(`Duplicate brand name`, { cause: 409 }));
   const { public_id, secure_url } = await cloudinary.uploader.upload(
@@ -13,14 +13,16 @@ export const createBrand = async (req, res, next) => {
   const brand = await brandModel.create({
     name,
     image: { public_id, secure_url },
-    categoryId:catId
+    categoryId: catId,
+    createdBy: req.user._id,
+    updatedBy: req.user._id,
   });
   return res.status(201).json({ message: "success", brand });
 };
 
 export const updateBrand = async (req, res, next) => {
-  const {brandId, catId} = req.params
-  const brand = await brandModel.findOne({_id:brandId, categoryId:catId});
+  const { brandId, catId } = req.params;
+  const brand = await brandModel.findOne({ _id: brandId, categoryId: catId });
   if (!brand)
     return next(
       new Error(`invalid brand id ${req.params.catId}`, { cause: 400 })
@@ -43,30 +45,27 @@ export const updateBrand = async (req, res, next) => {
     await cloudinary.uploader.destroy(brand.image.public_id);
     brand.image = { secure_url, public_id };
   }
+  brand.updatedBy = req.user._id;
   await brand.save();
   return res.status(200).json({ message: "success", brand });
-}
-
+};
 
 export const getSpecificBrand = async (req, res, next) => {
-  const {catId, brandId} = req.params
-  const brand = await brandModel.findOne({categoryId: catId, _id: brandId});
-  if(!brand)
-    return res.status(404).json({ message: "no brand found"});
-  return res.status(200).json({message:"success", brand});
-}
-
+  const { catId, brandId } = req.params;
+  const brand = await brandModel.findOne({ categoryId: catId, _id: brandId });
+  if (!brand) return res.status(404).json({ message: "no brand found" });
+  return res.status(200).json({ message: "success", brand });
+};
 
 export const getAllBrands = async (req, res, next) => {
   const categories = await brandModel.find();
-  
-  return res.status(200).json({message:"success", categories});
-}
 
+  return res.status(200).json({ message: "success", categories });
+};
 
 export const getBrandsInCat = async (req, res, next) => {
-  const {catId} = req.params
-  const categories = await brandModel.find({categoryId:catId});
-  
-  return res.status(200).json({message:"success", categories});
-}
+  const { catId } = req.params;
+  const brands = await brandModel.find({ categoryId: catId });
+
+  return res.status(200).json({ message: "success", brands });
+};
