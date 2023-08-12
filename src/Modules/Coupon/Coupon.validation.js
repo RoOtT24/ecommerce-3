@@ -6,7 +6,7 @@ export const createCoupon = joi.object({
     // body:{
     name:joi.string().min(2).max(20).required(),
     amount:joi.number().positive().min(1).max(100).required(),
-    expireDate:joi.date(),
+    expireDate:joi.required(),
 // },
 }).required();
 

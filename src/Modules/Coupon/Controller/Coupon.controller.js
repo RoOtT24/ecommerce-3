@@ -8,35 +8,13 @@ export const createCoupon = async (req, res, next) => {
   
   if (await couponModel.findOne({ name }))
     return next(new Error(`Duplicate coupon name`, { cause: 409 }));
-  // if(req.body.expireDate && req.body.amount){
-  //   const {expireDate, amount} = req.body;
-  //   const coupon = await couponModel.create({
-  //     name,
-  //     expireDate,
-  //     amount
-  //   });
-  // return res.status(201).json({ message: "success", coupon });
-
-  // }
-  // else if(req.body.amount){
-  //   const {amount} = req.body;
-  //   const coupon = await couponModel.create({
-  //     name,
-  //     amount
-  //   });
-  // return res.status(201).json({ message: "success", coupon });
-
-  // }
-  // else if(req.body.expireDate){
-  //   const {expireDate} = req.body;
-  //   const coupon = await couponModel.create({
-  //     name,
-  //     expireDate
-  //   });
-  // return res.status(201).json({ message: "success", coupon });
-
-  // }
-  // else{
+    let now = new Date();
+    let date = Date.parse(req.body.expireDate);
+    if(now.getTime() >= date.getTime()){
+      return next(new Error('invalid date', {cause:400}))
+    }
+    const dateConvert = new Date(date);
+    req.body.expireDate = dateConvert.toLocaleDateString();
   const coupon = await couponModel.create({
     name,
     amount,

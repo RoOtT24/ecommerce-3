@@ -8,6 +8,7 @@ import CouponRouter from "./Coupon/Coupon.router.js";
 import BrandRouter from "./Brand/Brand.router.js";
 import ProductRouter from "./Product/Product.router.js";
 import CartRouter from "./Cart/Cart.router.js";
+import OrderRouter from "./Order/Order.router.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +26,7 @@ const initApp = (app, express) => {
   app.use("/brand", BrandRouter);
   app.use("/product", ProductRouter);
   app.use("/cart", CartRouter);
+  app.use("/order", OrderRouter);
   app.use("/*", (req, res) => {
     return res.json({ message: "page not found" });
   });
