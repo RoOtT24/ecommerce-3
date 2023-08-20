@@ -17,6 +17,7 @@ const brandSchema = new Schema ({
         type:Types.ObjectId, ref:'User', // will be required: true after prototype
     },
     categoryId:{type:Types.ObjectId, ref:'Category', required:true},
+    isDeleted: { type: Boolean, default: false },
 },
 {
     timestamps:true

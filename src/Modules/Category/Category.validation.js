@@ -3,10 +3,8 @@ import { generalFields } from '../../Middleware/validation.js';
 
 
 export const createCategory = joi.object({
-    // body:{
     name:joi.string().min(2).max(20).required(),
     file:generalFields.file.required(),
-// },
 }).required();
 
 
@@ -26,3 +24,8 @@ export const getSpecificCategory = joi.object({
 export const getCategory = joi.object({
     
 }).required();
+
+
+export const forceDelete = joi.object({
+    categoryId:generalFields.id.required(),
+});

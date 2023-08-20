@@ -9,7 +9,7 @@ export const createCategory = async (req, res, next) => {
   const slug = slugify(name);
   const { public_id, secure_url } = await cloudinary.uploader.upload(
     req.file.path,
-    { folder: `${process.env.APP_NAME}/category` }
+    { folder: `${process.env.APP_NAME}/category/${name}` }
   );
   const category = await categoryModel.create({
     name,
@@ -63,3 +63,15 @@ export const getCategory = async (req, res, next) => {
   
   return res.status(200).json({message:"success", categories});
 }
+
+export const forceDelete = async (req, res, next) => {
+  let { categoryId } = req.params;
+  const category = await categoryModel.findOneAndDelete({
+    _id: categoryId,
+  });
+
+  if (!category) {
+    return next(new Error("no category found", { cause: 404 }));
+  }
+  return res.status(200).json({ message: "success", category });
+};

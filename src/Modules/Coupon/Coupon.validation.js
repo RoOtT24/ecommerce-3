@@ -28,3 +28,8 @@ export const getSpecificCoupon = joi.object({
 export const getCoupon = joi.object({
     
 }).required();
+
+
+export const deleteCoupon = joi.object({
+    couponId:generalFields.id.required(),
+});

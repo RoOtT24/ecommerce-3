@@ -1,6 +1,9 @@
 
 import joi from 'joi'
 import { Types } from 'mongoose';
+import userModel from '../../DB/model/User.model.js';
+import { roles } from './auth.middleware.js';
+import { verifyToken } from '../Services/generateAndVerifyToken.js';
 
 // const dataMethods = ['body','query','params','headers','file'];
 
@@ -10,14 +13,36 @@ export const validationObjectId =(value,helper)=>{
         return true 
     }else {
 
-        return helper.message("id is invalid")
-
+        return helper.message("id is invalid");
     }
+}
+
+
+const validationRefreshToken = async (value)=>{
+    try{
+    const decoded = verifyToken(value.split(process.env.BEARERKEY)[1], process.env.REFRESH_TOKEN);
+    const user = await userModel.findById(decoded?.id);//.select("userName role changePasswordTime");
+        if(!user){
+            return next(new Error("not register account", {cause:400}));
+        }
+        if(!Object.values(roles).includes(user.role)){
+            return next(new Error("not authorized", {cause:403}));
+        }
+
+        if(parseInt(user.changePasswordTime) > decoded.iat){
+            return next(new Error("expired token", {cause:400}));
+        }
+        
+        return true;
+    }
+        catch(err) {
+            return false;
+        }
 }
 
 export const generalFields = {
 
-    email:joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+    email:joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'edu'] } }),
     password:joi.string().min(3).required(),
     file:joi.object({
         fieldname:joi.string().required(),
@@ -31,15 +56,12 @@ export const generalFields = {
         dest:joi.string(),
     }),
     id:joi.string().custom(validationObjectId).required(),
+    refreshToken:joi.string().custom(validationRefreshToken),
 }
 
 const validation = (schema)=>{
     return (req,res,next)=>{
         const inputsData = req.file?{...req.body, ...req.params, ...req.query, file:req.file}:req.files?{...req.body, ...req.params, ...req.query, files:{...req.files}}:{...req.body, ...req.params, ...req.query};
-        console.log(inputsData.files)
-        for(const i in inputsData.files){
-            console.log(i[0]);
-        }
         const validationResult = schema.validate(inputsData,{abortEarly:false})
         if(validationResult.error?.details){
             return res.json({message:"validation error",error:validationResult.error.details});

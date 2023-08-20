@@ -5,21 +5,23 @@ import slugify from "slugify";
 
 export const createCoupon = async (req, res, next) => {
   const name = req.body.name.toLowerCase();
-  
+  const {amount} = req.body;
   if (await couponModel.findOne({ name }))
     return next(new Error(`Duplicate coupon name`, { cause: 409 }));
     let now = new Date();
     let date = Date.parse(req.body.expireDate);
-    if(now.getTime() >= date.getTime()){
+    if(now.getTime() >= date){
       return next(new Error('invalid date', {cause:400}))
     }
-    const dateConvert = new Date(date);
-    req.body.expireDate = dateConvert.toLocaleDateString();
+    const dateConvert = new Date(date).toLocaleDateString('en-US');
+    // return res.json({date:dateConvert});
+    req.body.expireDate = dateConvert//.toLocaleDateString();
   const coupon = await couponModel.create({
     name,
     amount,
     createdBy:req.user._id,
-    updatedBy:req.user._id
+    updatedBy:req.user._id,
+    expireDate:dateConvert
   });
   return res.status(200).json({ message: "success", coupon });
 // }
@@ -64,3 +66,16 @@ export const getCoupons = async (req, res, next) => {
   
   return res.status(200).json({message:"success", coupons});
 }
+
+
+export const deleteCoupon = async (req, res, next) => {
+  let { couponId } = req.params;
+  const coupon = await couponModel.findOneAndDelete({
+    _id: couponId,
+  });
+
+  if (!coupon) {
+    return next(new Error("no coupon found", { cause: 404 }));
+  }
+  return res.status(200).json({ message: "success", coupon });
+};

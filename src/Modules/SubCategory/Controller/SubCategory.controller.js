@@ -92,7 +92,8 @@ export const getProducts = async (req, res, next) => {
   const {products} = await subCategoryModel.findOne({_id:subCatId, categoryId:catId}).populate(
     {
       path:'products',
-      match:{isDeleted:{$eq:false}}
+      match:{isDeleted:{$eq:false}},
+      populate:{path:'reviews'}
     });
   return res.status(200).json({message:'success', products})
 }

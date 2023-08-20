@@ -13,7 +13,7 @@ function fileUpload(customValidation=[]){
             cb("invalid format",false);
         }
     }
-    const upload = multer({fileFilter,storage});
+    const upload = multer({fileFilter, storage});
     return upload;
 }
 export default fileUpload;

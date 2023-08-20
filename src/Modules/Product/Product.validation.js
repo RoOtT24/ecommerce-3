@@ -4,7 +4,7 @@ import { generalFields, validationObjectId } from '../../Middleware/validation.j
 
 export const createProduct = joi.object({
     // body:{
-    name:joi.string().min(2).max(20).required(),
+    name:joi.string().min(2).max(50).required(),
     // file:generalFields.file.required(),
     categoryId:generalFields.id.required(),
     brandId:generalFields.id.required(),
@@ -21,7 +21,7 @@ export const createProduct = joi.object({
 
 
 export const updateProduct = joi.object({
-    name:joi.string().min(2).max(20),
+    name:joi.string().min(2).max(50),
     description:joi.string(),
     stock:joi.number().min(0),
     price:joi.number().min(0),
@@ -42,7 +42,12 @@ export const getSpecificProduct = joi.object({
 }).required();
 
 export const getAllProducts = joi.object({
-    // catId:generalFields.id.required()
+    size:joi.number().min(1),
+    page:joi.number().min(1),
+    price:joi.object(),
+    stock:joi.object(),
+    sort:joi.string(),
+    search:joi.string(),
 }).required();
 
 

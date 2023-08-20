@@ -2,10 +2,8 @@ import userModel from "../../../../DB/model/User.model.js";
 import { generateToken, verifyToken } from "../../../Services/generateAndVerifyToken.js";
 import { compare, hash } from "../../../Services/hashAndCompare.js";
 import { sendEmail } from "../../../Services/sendEmail.js";
-import { loginSchema, signupSchema } from "../Auth.validation.js";
 import { asyncHandler } from '../../../Services/errorHandling.js';
 import { customAlphabet } from "nanoid";
-import { response } from "express";
 
 export const signup= async (req,res,next)=>{
 
@@ -16,9 +14,6 @@ export const signup= async (req,res,next)=>{
     if(user){
    //     return res.status(409).json({message:"email already exists"});
         return next(new Error("email already exists"),{cause:409});
-    }
-    if(password !== cPassword){
-      return next(new Error("passwords do not match",{cause:400}));
     }
     const hashPassword = hash(password);
     const token = generateToken({email},process.env.SIGNUP_TOKEN,60*30);
@@ -297,12 +292,12 @@ export const signup= async (req,res,next)=>{
 
 }
 
-export const confirmEmail = asyncHandler( async(req,res, next)=>{
+export const confirmEmail = async(req,res, next)=>{
 
     const {token} = req.params;
     
     const decoded = verifyToken(token,process.env.SIGNUP_TOKEN);
-
+    // console.log("decoded:",decoded);
     if(!decoded?.email){
         return next(new Error('invalid token payload'),{cause:404});
     }
@@ -311,14 +306,18 @@ export const confirmEmail = asyncHandler( async(req,res, next)=>{
     // return res.json({count:user.modifiedCount == true})
 
     
-    if(user.modifiedCount){
-        
-        return res.sendFile('index.html', { root: './html/' })
-
+    if(!user?.modifiedCount){
+      return next(new Error('no user to confirm'), {cause:404});
     }
-    else
-        return next(new Error('no user to confirm'), {cause:404});
-});
+    // return res.status(200).json({message:"email has been confirmed"});
+    res.sendFile('index.html', { root: './html/' }, function (err) {
+      if (err) {
+        return next(new Error(err,{cause:500}));
+      } else {
+          return res.status(200);
+      }});
+
+};
 
 export const newConfirmEmail = async(req,res)=>{
 
@@ -621,18 +620,27 @@ export const login = async(req,res,next)=>{
             return next(new Error("invalid login data", {cause:400}));
           }else {
             const token =generateToken({id:user._id, role:user.role}, process.env.LOGIN_TOKEN, '1h');
-            const refreshToken =generateToken({id:user._id, role:user.role}, process.env.LOGIN_TOKEN);
+            const refreshToken =generateToken({id:user._id, role:user.role}, process.env.REFRESH_TOKEN);
                 return res.status(200).json({message:"success",token, refreshToken});
             }
         
     }
 }
 
+
+export const refreshToken = async (req, res, next)=>{
+  let {refreshToken} = req.body;
+  refreshToken = refreshToken.split(process.env.BEARERKEY)[1];
+  const decoded = verifyToken(refreshToken, process.env.REFRESH_TOKEN);
+  const token = generateToken({id:decoded.id, role:decoded.role}, process.env.LOGIN_TOKEN, '1h');
+  return res.status(200).json({message:'success', token, refreshToken});
+}
+
 export const sendCode = async (req, res, next)=>{
   const {email} = req.body;
-  let code = customAlphabet("1234567890qwertyuiopasdfghjklzxcvbnm!@#$%^&*()", 4);
+  let code = customAlphabet(process.env.customAlphabet, 4);
   code = code();
-  html =`<p>Your Code is ${code}</p>`
+  const html =`<p>Your Code is ${code}</p>`
   const user = await userModel.findOneAndUpdate({email},{forgetCode:code});
   if(!user){
     return next(new Error('no user found',{cause:404}));
@@ -648,7 +656,7 @@ export const forgetPassword = async (req, res, next) => {
   if(!user){
     return next(new Error('no user found',{cause:404}));
   }
-  if(user.code != code || user.code == null){
+  if(user.forgetCode != code || user.forgetCode == null){
     return next(new Error('invalid code',{cause:400}));
   }
   password = hash(password)

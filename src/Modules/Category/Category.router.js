@@ -13,9 +13,10 @@ const router = Router({caseSensitive:true});
 router.use('/:catId/subCategory', subCategoryRouter);
 router.use('/:catId/brand', brandRouter);
 
-router.post('/', auth(endPoint.create), fileUpload(fileValidation.image).single('image'),validation(validators.createCategory), asyncHandler( categoryController.createCategory) );
-router.put('/:catId', auth(endPoint.update), fileUpload(fileValidation.image).single('image'),validation(validators.updateCategory), asyncHandler( categoryController.updateCategory));
-router.get('/:catId', validation(validators.getSpecificCategory), asyncHandler( categoryController.getSpecificCategory));
+router.post('/', auth(endPoint.create), fileUpload(fileValidation.image).single('image'), validation(validators.createCategory), asyncHandler( categoryController.createCategory) );
+router.put('/:catId', auth(endPoint.update), fileUpload(fileValidation.image).single('image'), validation(validators.updateCategory), asyncHandler( categoryController.updateCategory));
+router.get('/:catId', auth(endPoint.get), validation(validators.getSpecificCategory), asyncHandler( categoryController.getSpecificCategory));
 router.get('/', auth() ,validation(validators.getCategory), asyncHandler( categoryController.getCategory));
+router.delete('/forceDelete/:categoryId', auth(endPoint.delete), validation(validators.forceDelete), asyncHandler(categoryController.forceDelete));
 
 export default router;

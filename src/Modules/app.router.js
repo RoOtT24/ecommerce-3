@@ -11,10 +11,21 @@ import CartRouter from "./Cart/Cart.router.js";
 import OrderRouter from "./Order/Order.router.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from 'cors';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const fullPath = path.join(__dirname, "../upload");
 
 const initApp = (app, express) => {
+  
+  // app.use( (req, res, next)=>{
+  //   const whitelist = process.env.WHITELIST.split(',');
+  //   if (!whitelist.includes(req.header('origin'))) {
+  //     return next(new Error('invalid origin',{cause:403}));
+  //   } else {
+  //     next();
+  //   }
+  // })
+  app.use(cors());
   connectDB();
   app.use(express.json());
   app.use("/upload", express.static(fullPath));

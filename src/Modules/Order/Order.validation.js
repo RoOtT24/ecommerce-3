@@ -17,7 +17,7 @@ export const createOrderWithAllItemsFromCart = joi.object({
     phoneNumber:joi.string().min(10).required(),
     address:joi.string().min(5).required(),
     // products:joi.array().items(joi.object({productId:generalFields.id.required(), qty:joi.number().min(1).required()})),
-    paymentType:joi.string(),
+    paymentType:joi.string().required(),
 }).required();
 
 

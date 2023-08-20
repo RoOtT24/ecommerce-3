@@ -8,10 +8,12 @@ import { auth } from "../../Middleware/auth.middleware.js";
 import { endPoint } from "../Brand/Brand.EndPoint.js";
 const router = Router({mergeParams:true, caseSensitive:true});
 // http://localHost:3000/Category/CategoryId/Brand/brandId
-router.post('/', auth(endPoint.create), fileUpload(fileValidation.image).single('image'),validation(validators.createBrand), asyncHandler( brandController.createBrand) );
-router.put('/:brandId', auth(endPoint.update), fileUpload(fileValidation.image).single('image'),validation(validators.updateBrand), asyncHandler( brandController.updateBrand));
+router.post('/', auth(endPoint.create), fileUpload(fileValidation.image).single('image'), validation(validators.createBrand), asyncHandler( brandController.createBrand) );
+router.put('/:brandId', auth(endPoint.update), fileUpload(fileValidation.image).single('image'), validation(validators.updateBrand), asyncHandler( brandController.updateBrand));
 router.get('/specific/:brandId', auth(endPoint.get), validation(validators.getSpecificBrand), asyncHandler( brandController.getSpecificBrand));
 router.get('/', auth(endPoint.get), validation(validators.getBrandsInCat), asyncHandler( brandController.getBrandsInCat));
 router.get('/all', auth(endPoint.get), validation(validators.getAllBrands), asyncHandler( brandController.getAllBrands));
+router.patch('/softDelete/:brandId', auth(endPoint.delete), validation(validators.softDelete), asyncHandler(brandController.softDelete));
+router.delete('/forceDelete/:brandId', auth(endPoint.delete), validation(validators.softDelete), asyncHandler(brandController.forceDelete));
 
 export default router;

@@ -7,11 +7,11 @@ import validation from "../../Middleware/validation.js";
 import { auth } from "../../Middleware/auth.middleware.js";
 import { endPoint } from "../Cart/Cart.EndPoint.js";
 const router = Router({mergeParams:true, caseSensitive:true});
-// http://localHost:3000/Category/CategoryId/Cart/cartId
+// http://localHost:3000/Category/:CategoryId/Cart/:cartId
 router.post('/', auth(endPoint.create), validation(validators.createCart), asyncHandler( cartController.addProductToCart) );
-// router.put('/:cartId', auth(endPoint.update), fileUpload(fileValidation.image).single('image'),validation(validators.updateCart), asyncHandler( cartController.updateCart));
-router.get('/specific/:cartId', auth(endPoint.get), validation(validators.getSpecificCart), asyncHandler( cartController.getSpecificCart));
-router.get('/', auth(endPoint.get), validation(validators.getCartsInCat), asyncHandler( cartController.getCartsInCat));
+router.patch('/removeItem', auth(endPoint.clear), validation(validators.removeItem), asyncHandler( cartController.removeItem ) );
+router.patch('/clear', auth(endPoint.clear), validation(validators.clearCart), asyncHandler( cartController.clearCart ) );
+router.get('/', auth(endPoint.getOne), validation(validators.getSpecificCart), asyncHandler( cartController.getSpecificCart));
 router.get('/all', auth(endPoint.get), validation(validators.getAllCarts), asyncHandler( cartController.getAllCarts));
 
 export default router;

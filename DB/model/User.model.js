@@ -1,5 +1,5 @@
 
-import mongoose, {Schema,model} from 'mongoose';
+import mongoose, {Schema,Types,model} from 'mongoose';
 const userSchema = new Schema ({
     userName:{
         type:String,
@@ -20,9 +20,9 @@ const userSchema = new Schema ({
         type:Boolean,
         default:false,
     },
-    image:{
-        type:Object,
-    },
+    // image:{
+    //     type:Object,
+    // },
     phone:{
         type:String,
     },
@@ -41,8 +41,8 @@ const userSchema = new Schema ({
         enum:['Male', 'Female'],
 
     },
-    profolePublicUrl:String,
-    coverPic:[String],
+    profilePic:{type:Object},
+    coverPic:[{type:Object}],
     forgetCode:{
         type:String,
         default:null,
@@ -50,7 +50,9 @@ const userSchema = new Schema ({
     changePasswordTime:{
         type:Date,
         
-    }
+    },
+    wishList:[{type:Types.ObjectId, ref:'Product', required:true}]
+    ,
 },
 
 {

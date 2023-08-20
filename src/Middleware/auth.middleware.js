@@ -21,7 +21,7 @@ export const auth =(accessRoles=Object.values(roles))=>{
             return next(new Error("invalid token", {cause:400}));
         }
         const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
-        const user = await userModel.findById(decoded.id).select("userName role changePasswordTime");
+        const user = await userModel.findById(decoded.id);//.select("userName role changePasswordTime");
         if(!user){
             return next(new Error("not register account", {cause:400}));
         }

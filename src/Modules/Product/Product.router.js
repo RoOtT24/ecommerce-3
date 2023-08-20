@@ -6,7 +6,11 @@ import { asyncHandler } from "../../Services/errorHandling.js";
 import validation from "../../Middleware/validation.js";
 import { auth } from "../../Middleware/auth.middleware.js";
 import { endPoint } from "../Product/Product.EndPoint.js";
+import reviewRouter from '../Review/Review.router.js'
 const router = Router({mergeParams:true, caseSensitive:true});
+
+
+router.use('/:productId/review', reviewRouter); 
 
 router.post('/', auth(endPoint.create), fileUpload(fileValidation.image).fields([{name:'mainImage', maxCount:1}, {name:'subImages', maxCount:5}]), validation(validators.createProduct), asyncHandler( productController.createProduct) );
 router.put('/:productId', auth(endPoint.update), fileUpload(fileValidation.image).fields([{name:'mainImage', maxCount:1}, {name:'subImages', maxCount:5}]),validation(validators.updateProduct), asyncHandler( productController.updateProduct));
