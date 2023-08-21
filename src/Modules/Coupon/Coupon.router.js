@@ -8,10 +8,10 @@ import { endPoint } from "../Category/Category.EndPoint.js";
 const router = Router({caseSensitive:true});
 
 
-router.post('/', auth(endPoint.create), validation(validators.createCoupon), CouponController.createCoupon);
+router.post('/', auth(endPoint.create), validation(validators.createCoupon), asyncHandler(CouponController.createCoupon));
 router.get('/', validation(validators.getCoupon), CouponController.getCoupons);
-router.get('/:couponId', validation(validators.getSpecificCoupon), CouponController.getSpecificCoupon);
-router.put('/:couponId', auth(endPoint.update), validation(validators.updateCoupon), CouponController.updateCoupon);
-router.delete('/:couponId', auth(endPoint.delete), validation(validators.deleteCoupon), CouponController.deleteCoupon);
+router.get('/:couponId', validation(validators.getSpecificCoupon), asyncHandler(CouponController.getSpecificCoupon));
+router.put('/:couponId', auth(endPoint.update), validation(validators.updateCoupon), asyncHandler(CouponController.updateCoupon));
+router.delete('/:couponId', auth(endPoint.delete), validation(validators.deleteCoupon), asyncHandler(CouponController.deleteCoupon));
 
 export default router;
