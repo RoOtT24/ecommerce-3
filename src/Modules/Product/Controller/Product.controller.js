@@ -154,7 +154,7 @@ export const updateProduct = async (req, res, next) => {
           req.files.mainImage[0].oath,
           { folder: `${process.env.APP_NAME}/product` }
         );
-        product.push({ secure_url, public_id });
+        product.subImages.push({ secure_url, public_id });
       }
     }
   }
