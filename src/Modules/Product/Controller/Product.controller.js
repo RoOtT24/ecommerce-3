@@ -139,7 +139,7 @@ export const updateProduct = async (req, res, next) => {
     if (req.body.files?.mainImage[0]) {
       const { secure_url, public_id } = await cloudinary.uploader.upload(
         req.files.mainImage[0].oath,
-        { folder: `${process.env.APP_NAME}/product` }
+        { folder: `${process.env.APP_NAME}/product/mainImage` }
       );
       await cloudinary.uploader.destroy(product.mainImage.public_id);
       product.mainImage = { secure_url, public_id };
@@ -152,7 +152,7 @@ export const updateProduct = async (req, res, next) => {
       for (const img in req.body.files?.subImages) {
         const { secure_url, public_id } = await cloudinary.uploader.upload(
           req.files.mainImage[0].oath,
-          { folder: `${process.env.APP_NAME}/product` }
+          { folder: `${process.env.APP_NAME}/product/subImages` }
         );
         product.subImages.push({ secure_url, public_id });
       }
