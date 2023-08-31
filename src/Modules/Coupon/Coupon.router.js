@@ -4,7 +4,7 @@ import * as validators from './Coupon.validation.js';
 import { asyncHandler } from "../../Services/errorHandling.js";
 import validation from "../../Middleware/validation.js";
 import { auth } from "../../Middleware/auth.middleware.js";
-import { endPoint } from "../Category/Category.EndPoint.js";
+import { endPoint } from "../Coupon/Coupon.EndPoint.js";
 const router = Router({caseSensitive:true});
 
 
